@@ -53,8 +53,10 @@ function parseTextFile(
   characterInfos?: CharacterInfo[]
 ): AudioItem[] {
   const characters = new Map<string, number>();
+  console.log(characterInfos);
   for (const info of characterInfos || []) {
     for (const style of info.metas.styles) {
+      console.log(info.metas.speakerName, style.styleId);
       characters.set(info.metas.speakerName, style.styleId);
     }
   }
@@ -65,6 +67,7 @@ function parseTextFile(
   let lastStyleId = 0;
   for (const splittedText of body.split(new RegExp(`${seps.join("|")}`, "g"))) {
     const styleId = characters.get(splittedText);
+    console.log(splittedText, styleId);
     if (styleId !== undefined) {
       lastStyleId = styleId;
       continue;
@@ -476,6 +479,7 @@ export const audioStore: VoiceVoxStoreOptions<
         baseAudioItem?: AudioItem;
       }
     ) {
+      console.log("GENERATE_AUDIO_ITEM");
       //引数にbaseAudioItemが与えられた場合、baseAudioItemから話速等のパラメータを引き継いだAudioItemを返す
       //baseAudioItem.queryのうち、accentPhrasesとkanaは基本設定パラメータではないので引き継がない
       //baseAudioItemのうち、textとstyleIdは別途与えられるので引き継がない
@@ -1465,7 +1469,7 @@ export const audioCommandStore: VoiceVoxStoreOptions<
             ? state.audioItems[state._activeAudioKey]
             : undefined;
         }
-
+        console.log(state);
         for (const { text, styleId } of parseTextFile(
           body,
           state.characterInfos
